@@ -24,7 +24,7 @@ const CurrentList = (props) => {
   }
 
   const listItems = list.map(({name}) =>  
-      <li data-item={name}><span>{name}</span><button onClick={(handleRemove)}>x</button></li>
+      <li key={name} data-item={name}><span>{name}</span><button onClick={(handleRemove)}>x</button></li>
   );
 
 
