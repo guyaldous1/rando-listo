@@ -22,7 +22,6 @@ function App() {
         let postsData = await response.json();
         postsData = JSON.parse(postsData)
         setData(postsData);
-        // console.log('doot');
         setError(null);
       } catch (err) {
         setError(err.message);
@@ -55,7 +54,6 @@ function App() {
       let postsData = await response.json();
       postsData = JSON.parse(postsData)
       setData([...postsData]);
-      // console.log(postsData, data);
     } catch (err) {
       setError(err.message);
       setData(null);
@@ -82,7 +80,6 @@ function App() {
       let postsData = await response.json();
       postsData = JSON.parse(postsData)
       setData([...postsData]);
-      // console.log(postsData, data);
     } catch (err) {
       setError(err.message);
       setData(null);
