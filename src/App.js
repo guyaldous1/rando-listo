@@ -7,13 +7,18 @@ function App() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [randomItem, setRandomItem] = useState('')
 
+  const [lists, setLists] = useState(null);
+  const [currentList, setCurrentList] = useState(null)
+
+  //get all lists
   useEffect(() => {
-    const fetchCurrentListData = async () => {
+    const fetchListOfLists = async () => {
       try {
         
         const response = await fetch(
-          `/api/get-list`
+          `/api/all-lists`
         );
         if (!response.ok) {
           throw new Error(`HTTP error: Status ${response.status}`);
@@ -21,18 +26,46 @@ function App() {
         
         let postsData = await response.json();
         postsData = JSON.parse(postsData)
-        setData(postsData);
+        setLists(postsData);
         setError(null);
       } catch (err) {
         setError(err.message);
-        setData(null);
+        setLists(null);
       } finally {
-        setLoading(false);
+        // setLoading(false);
       }
     };
 
-    fetchCurrentListData();
+    fetchListOfLists();
   }, []);
+
+  //get current list
+  useEffect(() => {
+  const fetchCurrentListData = async () => {
+    if(currentList !== null)
+    try {
+      
+      const response = await fetch(
+        `/api/get-list?listId=${currentList.id}`
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error: Status ${response.status}`);
+      }
+      
+      let postsData = await response.json();
+      postsData = JSON.parse(postsData)
+      setData(postsData);
+      console.log(postsData);
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+      setData(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetchCurrentListData()
+}, [currentList]);
 
   const handleNew = async (newItem) => {
     const settings = {
@@ -45,7 +78,7 @@ function App() {
 
     try {
       const response = await fetch(
-        `/api/update-list?newItem=${newItem}`, settings
+        `/api/update-list?listId=${currentList}&newItem=${newItem}`, settings
       );
       if (!response.ok) {
         throw new Error(`HTTP error: Status ${response.status}`);
@@ -71,7 +104,7 @@ function App() {
 
     try {
       const response = await fetch(
-        `/api/update-list?removeItem=${removeItem}`, settings
+        `/api/update-list?listId=${currentList}&removeItem=${removeItem}`, settings
       );
       if (!response.ok) {
         throw new Error(`HTTP error: Status ${response.status}`);
@@ -97,7 +130,7 @@ function App() {
 
     try {
       const response = await fetch(
-        `/api/update-list?reset`, settings
+        `/api/update-list?listId=${currentList}&reset`, settings
       );
       if (!response.ok) {
         throw new Error(`HTTP error: Status ${response.status}`);
@@ -113,14 +146,33 @@ function App() {
     }
   };
   
+  const randomise = () => {
+    if(data.length <= 0) return
+
+    const random = Math.floor(Math.random() * data.length)
+    const randomItem = data[random]
+    console.log(random, randomItem)
+    setRandomItem(randomItem.name)
+  }
+
   return (
     <div className="App">
-          {loading && (
-      <div className="text-xl font-medium">Loading list...</div>
-    )}
+  {lists && 
+      lists.map(({name, id}, index) =>  {
+        return <li key={id} onClick={() => setCurrentList({id, name})}><span>{name}</span></li>
+  })} 
+    {loading && (
+        <div className="text-xl font-medium">Loading list...</div>
+      )}
     {error && <div className="text-red-700">{error}</div>}
-    {data &&
+    {randomItem &&
+    <p>{randomItem}</p>
+    }
+    
+    {data && 
     <>
+      <h2>Current List: {currentList.name}</h2>
+      <button onClick={() => randomise()}>randomise</button>
       <CurrentList existingList={data} handleNew={handleNew} handleRemove={handleRemove} />
       <button onClick={() => handleReset()}>reset list</button>
     </>
