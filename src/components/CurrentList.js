@@ -1,40 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const CurrentList = (props) => {
-  // Declare a new state variable, which we'll call "count"  
+
   const [list, setList] = useState(
     [...props.existingList]
   );
   const [newItem, setNewItem] = useState('')
+  const [loading, setLoading] = useState(false);
 
-  const handleRemove = (e) => {
-    let remove = e.target.parentNode.getAttribute('data-item')
-  
-    var filtered = list.filter((el) => { return el.name !== remove }); 
-      setList([ 
-        ...filtered
-      ]);
-    }
+  console.log(loading)
 
-  const handleAdd = () => {
-    setList([
-        ...list,
-        { name: newItem }
-      ]);
+  const handleAdd = (e) => {
+    e.preventDefault()
+
+    if(newItem.length <= 0) return alert("please enter an item")
+
+    props.handleNew(newItem)
+    setLoading(true)
   }
 
-  const listItems = list.map(({name}) =>  
-      <li key={name} data-item={name}><span>{name}</span><button onClick={(handleRemove)}>x</button></li>
-  );
+  //update list on new item
+  useEffect(() => { 
+    setList([...props.existingList]) 
+    setNewItem('')
+    setLoading(false)
 
+  }, [props.existingList]);
 
+  let listItems = list.map(({name, id}, index) =>  {
+      return <li key={id}><span>{name}</span><button onClick={ () => props.handleRemove(id)}>x</button></li>
+});
 
 
   return (
     <>
-    <input placeholder="add new item" value={newItem} onChange={e => setNewItem(e.target.value)} />
-    <button onClick={handleAdd}>Add</button>
-
+    <form onSubmit={handleAdd}>
+      <fieldset disabled={loading}>
+      <input placeholder="add new item" value={newItem} onChange={e => setNewItem(e.target.value)} />
+      <button type="submit">Add</button>
+      </fieldset>
+    </form>
     <ul>
     {listItems}
     </ul>

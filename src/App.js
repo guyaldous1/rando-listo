@@ -22,7 +22,7 @@ function App() {
         let postsData = await response.json();
         postsData = JSON.parse(postsData)
         setData(postsData);
-        console.log(postsData);
+        // console.log('doot');
         setError(null);
       } catch (err) {
         setError(err.message);
@@ -36,15 +36,13 @@ function App() {
   }, []);
 
   const handleNew = async (newItem) => {
-
     const settings = {
-      method: 'POST',
-      headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-      }
-  };
-
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        }
+    };
 
     try {
       const response = await fetch(
@@ -56,17 +54,67 @@ function App() {
       
       let postsData = await response.json();
       postsData = JSON.parse(postsData)
-      setData(postsData);
-      console.log(postsData);
-      setError(null);
+      setData([...postsData]);
+      // console.log(postsData, data);
     } catch (err) {
       setError(err.message);
       setData(null);
-    } finally {
-      setLoading(false);
     }
   };
 
+  const handleRemove = async (removeItem) => {
+    const settings = {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        }
+    };
+
+    try {
+      const response = await fetch(
+        `/api/update-list?removeItem=${removeItem}`, settings
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error: Status ${response.status}`);
+      }
+      
+      let postsData = await response.json();
+      postsData = JSON.parse(postsData)
+      setData([...postsData]);
+      // console.log(postsData, data);
+    } catch (err) {
+      setError(err.message);
+      setData(null);
+    }
+  };
+
+  const handleReset = async () => {
+    const settings = {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        }
+    };
+
+    try {
+      const response = await fetch(
+        `/api/update-list?reset`, settings
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error: Status ${response.status}`);
+      }
+      
+      let postsData = await response.json();
+      postsData = JSON.parse(postsData)
+      setData([...postsData]);
+      // console.log(postsData, data);
+    } catch (err) {
+      setError(err.message);
+      setData(null);
+    }
+  };
   
   return (
     <div className="App">
@@ -75,7 +123,10 @@ function App() {
     )}
     {error && <div className="text-red-700">{error}</div>}
     {data &&
-      <CurrentList existingList={data} handleNew={handleNew}/>
+    <>
+      <CurrentList existingList={data} handleNew={handleNew} handleRemove={handleRemove} />
+      <button onClick={() => handleReset()}>reset list</button>
+    </>
     } 
     </div>
   );
