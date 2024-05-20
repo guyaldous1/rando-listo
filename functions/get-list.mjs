@@ -7,7 +7,7 @@ const getList = async (req, context) => {
 
     const { blobs } = await store.list();
 
-    if(blobs.some(b => b.name === 'list')){
+    if(!blobs.some(b => b.name === 'list')){
         await store.setJSON("list", []);
     }
 
