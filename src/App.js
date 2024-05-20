@@ -11,27 +11,61 @@ function App() {
   useEffect(() => {
     const fetchCurrentListData = async () => {
       try {
-        // console.log('doot')
+        
         const response = await fetch(
           `/api/get-list`
         );
         if (!response.ok) {
           throw new Error(`HTTP error: Status ${response.status}`);
         }
+        
         let postsData = await response.json();
+        postsData = JSON.parse(postsData)
         setData(postsData);
+        console.log(postsData);
         setError(null);
       } catch (err) {
         setError(err.message);
         setData(null);
       } finally {
         setLoading(false);
-        console.log(data)
       }
     };
 
     fetchCurrentListData();
   }, []);
+
+  const handleNew = async (newItem) => {
+
+    const settings = {
+      method: 'POST',
+      headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+      }
+  };
+
+
+    try {
+      const response = await fetch(
+        `/api/update-list?newItem=${newItem}`, settings
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error: Status ${response.status}`);
+      }
+      
+      let postsData = await response.json();
+      postsData = JSON.parse(postsData)
+      setData(postsData);
+      console.log(postsData);
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+      setData(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   
   return (
@@ -40,9 +74,9 @@ function App() {
       <div className="text-xl font-medium">Loading list...</div>
     )}
     {error && <div className="text-red-700">{error}</div>}
-    {/* {data &&
-      <CurrentList existingList={data.list}/>
-    } */}
+    {data &&
+      <CurrentList existingList={data} handleNew={handleNew}/>
+    } 
     </div>
   );
 }

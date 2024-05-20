@@ -12,17 +12,17 @@ const updateList = async (req, context) => {
 
 
     const store = getStore("store");
-    // await store.setJSON("list1", [{name:"blonk"},{name:"donk"}]);
+    // await store.setJSON("list", [{name:"blonk"},{name:"donk"}] );
 
     // const { blobs } = await store.list();
-    const list = await store.get('list1')
+    const list = await store.get('list')
 
     // console.log(blobs)
     console.log(list)
 
     // let list = 
 
-    // return new Response(JSON.stringify(list));
+    return new Response(JSON.stringify(list));
 }
 
 export default updateList
