@@ -22,12 +22,12 @@ const updateList = async (req, context) => {
     let oldlist = await store.get(`list-${listId}`)
     oldlist = JSON.parse(oldlist)
     console.log(oldlist)
-    await store.setJSON(`list-${listId}`, [...oldlist, {id: uuidv4(), name: newItem}]);
-    console.log([...oldlist, {id: uuidv4(), name: newItem}])
 
+    let newlist = [...oldlist, {id: uuidv4(), name: newItem}]
 
-    const newlist = await store.get(`list-${listId}`)
-    console.log(newlist);
+    await store.setJSON(`list-${listId}`, newlist);
+    console.log(newlist)
+
     return Response.json(newlist);
 
 }
