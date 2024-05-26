@@ -79,6 +79,7 @@ function App() {
     };
 
     try {
+      setLoading(true);
       const response = await fetch(
         `/api/update-list?listId=${currentList.id}&newItem=${newItem}`, settings
       );

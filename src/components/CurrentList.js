@@ -32,6 +32,7 @@ const CurrentList = (props) => {
     setList([...props.existingList]) 
     setNewItem('')
     setLoading(false)
+    console.log([...props.existingList])
 
   }, [props.existingList]);
 
