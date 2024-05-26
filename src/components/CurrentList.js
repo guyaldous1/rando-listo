@@ -34,8 +34,8 @@ const CurrentList = (props) => {
     setList([...props.existingList]) 
     setNewItem('')
     setLoading(false)
-    
-    alert([...props.existingList])
+
+    alert('update child')
 
   }, [props.existingList]);
 

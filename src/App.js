@@ -178,6 +178,7 @@ function App() {
       let postsData = await response.json();
       postsData = JSON.parse(postsData)
       setLists([...postsData]);
+      alert('update parent add')
     } catch (err) {
       setError(err.message);
       setData(null);
