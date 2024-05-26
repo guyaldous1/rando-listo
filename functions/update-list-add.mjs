@@ -28,7 +28,8 @@ const updateList = async (req, context) => {
     await store.setJSON(`list-${listId}`, newlist);
     console.log(newlist)
 
-    let updatedlist = await store.get(`list-${listId}`)
+    const newstore = getStore("store");
+    let updatedlist = await newstore.get(`list-${listId}`)
     console.log(updatedlist)
     return Response.json(updatedlist);
 
