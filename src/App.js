@@ -57,7 +57,7 @@ function App() {
       let postsData = await response.json();
       postsData = JSON.parse(postsData)
       setData(postsData);
-      // console.log(postsData);
+
       setError(null);
     } catch (err) {
       setError(err.message);
@@ -79,7 +79,6 @@ function App() {
     };
 
     try {
-      setLoading(true);
       const response = await fetch(
         `/api/update-list-add?listId=${currentList.id}&newItem=${newItem}`, settings
       );
@@ -90,7 +89,6 @@ function App() {
       let postsData = await response.json();
       postsData = JSON.parse(postsData)
       setData([...postsData]);
-      console.log([...postsData], data);
     } catch (err) {
       setError(err.message);
       setData(null);
@@ -128,7 +126,6 @@ function App() {
       handleRemoveCall(id)
     } else {
       // Do nothing!
-      // console.log('cancelled');
     }
   }
 
