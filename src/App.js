@@ -89,7 +89,7 @@ function App() {
       let postsData = await response.json();
       postsData = JSON.parse(postsData)
       setData([...postsData]);
-      alert('update parent add')
+      console.log([...postsData]);
     } catch (err) {
       setError(err.message);
       setData(null);

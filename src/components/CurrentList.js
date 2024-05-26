@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 const CurrentList = (props) => {
 
-  const [list, setList] = useState([]);
+  const [list, setList] = useState([...props.existingList]);
   const [newItem, setNewItem] = useState('')
   const [loading, setLoading] = useState(false);
 
@@ -32,8 +32,6 @@ const CurrentList = (props) => {
     setList([...props.existingList]) 
     setNewItem('')
     setLoading(false)
-
-    alert('update child')
 
   }, [props.existingList]);
 
