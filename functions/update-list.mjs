@@ -15,7 +15,7 @@ const updateList = async (req, context) => {
     if(!query.searchParams.has("reset") && !query.searchParams.has("removeItem") && !query.searchParams.has("newItem")) return Response.json({error:'soz bro need param'});
     //load netlify blob storage
     const store = getStore("store");
-    // console.log('donk')
+   
     //add item
     if(query.searchParams.has("newItem")){
         let newItem = query.searchParams.get("newItem")
@@ -23,18 +23,12 @@ const updateList = async (req, context) => {
         let oldlist = await store.get(`list-${listId}`)
         oldlist = JSON.parse(oldlist)
 
-        const newlist = [...oldlist, {id: uuidv4(), name: newItem}]
-
-        await store.setJSON(`list-${listId}`, newlist);
-
-        console.log(newlist)
-        return Response.json(JSON.stringify(newlist));
+        await store.setJSON(`list-${listId}`, [...oldlist, {id: uuidv4(), name: newItem}]);
     }
 
     //reset list
     if(query.searchParams.has("reset")){
         await store.setJSON(`list-${listId}`, []);
-        return Response.json(JSON.stringify([]));
     }
 
     //remove item by ID
@@ -47,9 +41,14 @@ const updateList = async (req, context) => {
         let newList = oldlist.filter(item => item.id !== removeItem)
 
         await store.setJSON(`list-${listId}`, [...newList]);
-        return Response.json(JSON.stringify([...newList]));
     }
 
+    
+
+
+    const newlist = await store.get(`list-${listId}`)
+
+    return Response.json(newlist);
 
 }
 
