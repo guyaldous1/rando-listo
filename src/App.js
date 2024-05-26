@@ -89,7 +89,7 @@ function App() {
       let postsData = await response.json();
       postsData = JSON.parse(postsData)
       setData([...postsData]);
-      console.log([...postsData]);
+      console.log([...postsData], data);
     } catch (err) {
       setError(err.message);
       setData(null);
