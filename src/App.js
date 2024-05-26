@@ -57,7 +57,7 @@ function App() {
       let postsData = await response.json();
       postsData = JSON.parse(postsData)
       setData(postsData);
-      console.log(postsData);
+      // console.log(postsData);
       setError(null);
     } catch (err) {
       setError(err.message);
@@ -126,7 +126,7 @@ function App() {
       handleRemoveCall(id)
     } else {
       // Do nothing!
-      console.log('cancelled');
+      // console.log('cancelled');
     }
   }
 
@@ -197,7 +197,7 @@ function App() {
       handleResetCall()
     } else {
       // Do nothing!
-      console.log('cancelled');
+      // console.log('cancelled');
     }
   }
   

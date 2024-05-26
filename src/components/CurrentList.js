@@ -8,15 +8,13 @@ const CurrentList = (props) => {
   const [newItem, setNewItem] = useState('')
   const [loading, setLoading] = useState(false);
 
-  console.log(loading)
-
   const handleAdd = (e) => {
     e.preventDefault()
 
     if(newItem.length <= 0) return alert("please enter an item")
 
     props.handleNew(newItem)
-    setLoading(true)
+    // setLoading(true)
   }
 
   const listStyle = {
@@ -36,6 +34,8 @@ const CurrentList = (props) => {
     setList([...props.existingList]) 
     setNewItem('')
     setLoading(false)
+    
+    alert([...props.existingList])
 
   }, [props.existingList]);
 
