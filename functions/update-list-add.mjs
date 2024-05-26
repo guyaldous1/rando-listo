@@ -28,7 +28,7 @@ const updateList = async (req, context) => {
     await store.setJSON(`list-${listId}`, newlist);
     console.log(newlist)
 
-    return Response.json(newlist);
+    return Response.json(JSON.stringify(newlist));
 
 }
 
