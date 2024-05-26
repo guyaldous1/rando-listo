@@ -19,6 +19,18 @@ const CurrentList = (props) => {
     setLoading(true)
   }
 
+  const listStyle = {
+    color: "white",
+    backgroundColor: "DodgerBlue",
+    padding: "10px",
+    marginBottom: "5px",
+    fontFamily: "Arial",
+    textAlign: "left",
+    display: 'flex',
+    justifyContent: "space-between",
+    alignItems: "center"
+  };
+
   //update list on new item
   useEffect(() => { 
     setList([...props.existingList]) 
@@ -28,8 +40,9 @@ const CurrentList = (props) => {
   }, [props.existingList]);
 
   let listItems = list.map(({name, id}, index) =>  {
-      return <li key={id}><span>{name}</span><button onClick={ () => props.handleRemove(id)}>x</button></li>
+      return <li key={id} style={listStyle}><span>{name}</span><button onClick={ () => props.handleRemove(id, name)}>x</button></li>
 });
+
 
 
   return (
@@ -40,7 +53,7 @@ const CurrentList = (props) => {
       <button type="submit">Add</button>
       </fieldset>
     </form>
-    <ul>
+    <ul style={{listStyleType: "none", padding: 0}}>
     {listItems}
     </ul>
     </>

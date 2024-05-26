@@ -11,6 +11,7 @@ function App() {
 
   const [lists, setLists] = useState(null);
   const [currentList, setCurrentList] = useState(null)
+  const [loadingLists, setLoadingLists] = useState(true);
 
   //get all lists
   useEffect(() => {
@@ -27,6 +28,7 @@ function App() {
         let postsData = await response.json();
         postsData = JSON.parse(postsData)
         setLists(postsData);
+        setLoadingLists(false);
         setError(null);
       } catch (err) {
         setError(err.message);
@@ -78,7 +80,7 @@ function App() {
 
     try {
       const response = await fetch(
-        `/api/update-list?listId=${currentList}&newItem=${newItem}`, settings
+        `/api/update-list?listId=${currentList.id}&newItem=${newItem}`, settings
       );
       if (!response.ok) {
         throw new Error(`HTTP error: Status ${response.status}`);
@@ -93,7 +95,7 @@ function App() {
     }
   };
 
-  const handleRemove = async (removeItem) => {
+  const handleRemoveCall = async (removeItem) => {
     const settings = {
         method: 'POST',
         headers: {
@@ -104,7 +106,7 @@ function App() {
 
     try {
       const response = await fetch(
-        `/api/update-list?listId=${currentList}&removeItem=${removeItem}`, settings
+        `/api/update-list?listId=${currentList.id}&removeItem=${removeItem}`, settings
       );
       if (!response.ok) {
         throw new Error(`HTTP error: Status ${response.status}`);
@@ -119,7 +121,17 @@ function App() {
     }
   };
 
-  const handleReset = async () => {
+  const handleRemove = (id, name) => {
+    if (window.confirm(`Are you sure you want to remove ${name}?`)) {
+      handleRemoveCall(id)
+    } else {
+      // Do nothing!
+      console.log('cancelled');
+    }
+  }
+
+  const handleResetCall = async () => {
+
     const settings = {
         method: 'POST',
         headers: {
@@ -130,7 +142,7 @@ function App() {
 
     try {
       const response = await fetch(
-        `/api/update-list?listId=${currentList}&reset`, settings
+        `/api/update-list?listId=${currentList.id}&reset`, settings
       );
       if (!response.ok) {
         throw new Error(`HTTP error: Status ${response.status}`);
@@ -145,6 +157,49 @@ function App() {
       setData(null);
     }
   };
+
+  const handleNewList = async (newItem) => {
+    const settings = {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        }
+    };
+
+    try {
+      const response = await fetch(
+        `/api/all-lists-update?newList=${newItem}`, settings
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error: Status ${response.status}`);
+      }
+      
+      let postsData = await response.json();
+      postsData = JSON.parse(postsData)
+      setLists([...postsData]);
+    } catch (err) {
+      setError(err.message);
+      setData(null);
+    }
+  };
+
+  const handleAddList = () => {
+    const enteredList = prompt('Please enter the name of the new list:')
+
+    if (enteredList) {
+      handleNewList(enteredList)
+    }
+  }
+  
+  const handleReset = () => {
+    if (window.confirm(`Are you sure you want to reset ${currentList.name}?`)) {
+      handleResetCall()
+    } else {
+      // Do nothing!
+      console.log('cancelled');
+    }
+  }
   
   const randomise = () => {
     if(data.length <= 0) return
@@ -157,27 +212,40 @@ function App() {
 
   return (
     <div className="App">
-  {lists && 
-      lists.map(({name, id}, index) =>  {
-        return <li key={id} onClick={() => setCurrentList({id, name})}><span>{name}</span></li>
-  })} 
-    {loading && (
-        <div className="text-xl font-medium">Loading list...</div>
+
+      <section className="container">
+        <h3>Lists</h3>
+        <div className="list-name__wrapper">
+        {loadingLists && (
+        <div className="text-xl font-medium">Loading Lists....</div>
       )}
-    {error && <div className="text-red-700">{error}</div>}
-    {randomItem &&
-    <p>{randomItem}</p>
-    }
+        {lists && 
+            lists.map(({name, id}, index) =>  {
+              return <div className="list-name" key={id} onClick={() => setCurrentList({id, name})}><span>{name}</span></div>
+        })}
+        <div className="list-name" onClick={handleAddList}>+ Add List +</div>
+      </div>
+    </section>
     
-    {data && 
-    <>
-      <h2>Current List: {currentList.name}</h2>
-      <button onClick={() => randomise()}>randomise</button>
-      <CurrentList existingList={data} handleNew={handleNew} handleRemove={handleRemove} />
-      <button onClick={() => handleReset()}>reset list</button>
-    </>
-    } 
-    </div>
+    <section className="container">
+      {loading && (
+          <div className="text-xl font-medium">Select a list.</div>
+        )}
+      {error && <div className="text-red-700">{error}</div>}
+      {randomItem &&
+      <p>{randomItem}</p>
+      }
+      
+      {data && 
+      <>
+        <h2>Current List: {currentList.name}</h2>
+        <button onClick={() => randomise()} disabled={data.length === 0}>randomise</button>
+        <CurrentList existingList={data} handleNew={handleNew} handleRemove={handleRemove} />
+        <button onClick={() => handleReset()} disabled={data.length === 0}>reset list</button>
+      </>
+      } 
+    </section>
+  </div>
   );
 }
 

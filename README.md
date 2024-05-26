@@ -1,4 +1,6 @@
 # Getting Started with Create React App
+Plz use node version 20.13.1
+
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
