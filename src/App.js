@@ -81,7 +81,7 @@ function App() {
     try {
       setLoading(true);
       const response = await fetch(
-        `/api/update-list?listId=${currentList.id}&newItem=${newItem}`, settings
+        `/api/update-list-add?listId=${currentList.id}&newItem=${newItem}`, settings
       );
       if (!response.ok) {
         throw new Error(`HTTP error: Status ${response.status}`);
