@@ -47,7 +47,7 @@ const updateList = async (req, context) => {
 
 
     const newlist = await store.get(`list-${listId}`)
-
+    console.log(newlist);
     return Response.json(newlist);
 
 }
