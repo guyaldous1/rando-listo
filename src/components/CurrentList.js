@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 const CurrentList = (props) => {
 
-  const [list, setList] = useState(
-    [...props.existingList]
-  );
+  const [list, setList] = useState([]);
   const [newItem, setNewItem] = useState('')
   const [loading, setLoading] = useState(false);
 
