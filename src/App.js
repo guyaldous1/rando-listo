@@ -27,10 +27,10 @@ function App() {
         }
         
         let postsData = await response.json();
-        postsData = JSON.parse(postsData)
         setLists(postsData);
         setLoadingLists(false);
         setError(null);
+        
       } catch (err) {
         setError(err.message);
         setLists(null);
@@ -56,7 +56,6 @@ function App() {
       }
       
       let postsData = await response.json();
-      postsData = JSON.parse(postsData)
       setData(postsData);
 
       setError(null);
@@ -70,6 +69,29 @@ function App() {
   fetchCurrentListData()
 }, [currentList]);
 
+const reFetchListOfLists = async () => {
+  try {
+    
+    const response = await fetch(
+      `/api/all-lists`
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error: Status ${response.status}`);
+    }
+    
+    let postsData = await response.json();
+    setLists(postsData);
+    setLoadingLists(false);
+    setError(null);
+    
+  } catch (err) {
+    setError(err.message);
+    setLists(null);
+  } finally {
+    // setLoading(false);
+  }
+};
+
   const handleNew = async (newItem) => {
     const settings = {
         method: 'POST',
@@ -82,15 +104,12 @@ function App() {
     try {
       setLoading(true);
       const response = await fetch(
-        `/api/update-list-add?listId=${currentList.id}&newItem=${newItem}`, settings
+        `/api/update-list?listId=${currentList.id}&newItem=${newItem}`, settings
       );
       if (!response.ok) {
         throw new Error(`HTTP error: Status ${response.status}`);
       }
-      
-      // let postsData = await response.json();
-      // postsData = JSON.parse(postsData)
-      // setData([...postsData]);
+
       reFetchCurrentListData();
     } catch (err) {
       setError(err.message);
@@ -135,7 +154,6 @@ function App() {
       }
       
       let postsData = await response.json();
-      postsData = JSON.parse(postsData)
       setData(postsData);
       setError(null);
     } catch (err) {
@@ -197,9 +215,7 @@ function App() {
         throw new Error(`HTTP error: Status ${response.status}`);
       }
       
-      let postsData = await response.json();
-      postsData = JSON.parse(postsData)
-      setLists([...postsData]);
+      reFetchListOfLists()
     } catch (err) {
       setError(err.message);
       setData(null);
@@ -242,8 +258,8 @@ function App() {
         <div className="text-xl font-medium">Loading Lists....</div>
       )}
         {lists && 
-            lists.map(({name, id}, index) =>  {
-              return <div className="list-name" key={id} onClick={() => setCurrentList({id, name})}><span>{name}</span></div>
+            lists.map(({listName, _id}, index) =>  {
+              return <div className="list-name" key={_id} onClick={() => setCurrentList({_id, listName})}><span>{listName}</span></div>
         })}
         <div className="list-name" onClick={handleAddList}>+ Add List +</div>
       </div>
