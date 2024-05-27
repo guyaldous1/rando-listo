@@ -21,17 +21,12 @@ const updateList = async (req, context) => {
 
     let oldlist = await store.get(`list-${listId}`)
     oldlist = JSON.parse(oldlist)
-    console.log(oldlist)
 
     let newlist = [...oldlist, {id: uuidv4(), name: newItem}]
 
     await store.setJSON(`list-${listId}`, newlist);
-    console.log(newlist)
 
-
-    let updatedlist = await store.get(`list-${listId}`)
-
-    return Response.json(updatedlist);
+    return Response.json({response: 'Item Added Successfully'});
 
 }
 

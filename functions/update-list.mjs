@@ -24,11 +24,13 @@ const updateList = async (req, context) => {
         oldlist = JSON.parse(oldlist)
 
         await store.setJSON(`list-${listId}`, [...oldlist, {id: uuidv4(), name: newItem}]);
+        return Response.json({response: 'Item Added Successfully'});
     }
 
     //reset list
     if(query.searchParams.has("reset")){
         await store.setJSON(`list-${listId}`, []);
+        return Response.json({response: 'List Reset Successfully'});
     }
 
     //remove item by ID
@@ -41,14 +43,9 @@ const updateList = async (req, context) => {
         let newList = oldlist.filter(item => item.id !== removeItem)
 
         await store.setJSON(`list-${listId}`, [...newList]);
+        
+        return Response.json({response: 'Item Removed Successfully'});
     }
-
-    
-
-
-    const newlist = await store.get(`list-${listId}`)
-    console.log(newlist);
-    return Response.json(newlist);
 
 }
 

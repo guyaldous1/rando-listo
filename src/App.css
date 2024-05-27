@@ -72,3 +72,15 @@ button{
   /* justify-content: center; */
   align-items: center;
 }
+
+.list-wrapper--disabled{
+  opacity: 0.6;
+  pointer-events: none;
+  user-select: none;
+}
+
+.random-item{
+  padding: 30px 12px;
+  font-weight: 700;
+  font-size: 30px;
+}
