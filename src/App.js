@@ -85,6 +85,7 @@ const reFetchListOfLists = async () => {
     let postsData = await response.json();
     setLists(postsData);
     setLoadingLists(false);
+    
     setError(null);
     
   } catch (err) {
@@ -92,6 +93,7 @@ const reFetchListOfLists = async () => {
     setLists(null);
   } finally {
     // setLoading(false);
+    setLoadingListData(false)
   }
 };
 
@@ -211,6 +213,7 @@ const reFetchListOfLists = async () => {
     };
 
     try {
+      setLoadingListData(true)
       const response = await fetch(
         `/api/all-lists-update?newList=${newItem}`, settings
       );

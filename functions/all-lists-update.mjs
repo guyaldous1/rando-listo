@@ -21,7 +21,7 @@ const allListsUpdate = async (req, context) => {
             const lists = database.collection('lists');
 
             await lists.insertOne(
-                {itemName: newItem}
+                {listName: newItem, list: []}
             )
             // Send a ping to confirm a successful connection
             return Response.json({response: 'List Added Successfully'}); 
