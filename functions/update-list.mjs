@@ -1,24 +1,24 @@
 import { v4 as uuidv4 } from 'uuid'
 import { MongoClient, ObjectId } from "mongodb"
 
-const mongoClient = new MongoClient(process.env.MONGO_DB);
-const client = mongoClient.connect();
+const mongoClient = new MongoClient(process.env.MONGO_DB)
+const client = mongoClient.connect()
 
 
 const updateList = async (req, context) => {
 
     let query = new URL(req.url)
 
-    if(!query.searchParams.has("listId")) return Response.json({error:'soz bro need id'});
+    if(!query.searchParams.has("listId")) return Response.json({error:'soz bro need id'})
 
     let listId = query.searchParams.get("listId")
-    if(listId === 'null') return Response.json({error:'soz bro need id'});
+    if(listId === 'null') return Response.json({error:'soz bro need id'})
     
     console.log(query.searchParams.get('newItem'))
 
-    if(!query.searchParams.has("reset") && !query.searchParams.has("removeItem") && !query.searchParams.has("newItem")) return Response.json({error:'soz bro need param'});
+    if(!query.searchParams.has("reset") && !query.searchParams.has("removeItem") && !query.searchParams.has("newItem")) return Response.json({error:'soz bro need param'})
     //load netlify blob storage
-    // const store = getStore("store");
+    // const store = getStore("store")
    
     //add item
     if(query.searchParams.has("newItem")){
@@ -26,8 +26,8 @@ const updateList = async (req, context) => {
 
         try {
             
-            const database = (await client).db('randolisto');
-            const lists = database.collection('lists');
+            const database = (await client).db('randolisto')
+            const lists = database.collection('lists')
         
             await lists.updateOne(
                 { "_id": new ObjectId(listId) },
@@ -35,13 +35,13 @@ const updateList = async (req, context) => {
             )
             
             // console.log(theList)
-            // return Response.json(theList);
-            return Response.json({response: 'Item Added Successfully'});   
+            // return Response.json(theList)
+            return Response.json({response: 'Item Added Successfully'})   
         
           } catch (error) {
         
-            // console.error(error);
-            // return Response.json(error);
+            // console.error(error)
+            // return Response.json(error)
         
           }
         
@@ -52,8 +52,8 @@ const updateList = async (req, context) => {
 
         try {
             
-            const database = (await client).db('randolisto');
-            const lists = database.collection('lists');
+            const database = (await client).db('randolisto')
+            const lists = database.collection('lists')
         
             await lists.updateOne(
                 { "_id": new ObjectId(listId) },
@@ -61,13 +61,13 @@ const updateList = async (req, context) => {
             )
             
             // console.log(theList)
-            // return Response.json(theList);
-            return Response.json({response: 'List Reset Successfully'});  
+            // return Response.json(theList)
+            return Response.json({response: 'List Reset Successfully'})  
         
           } catch (error) {
         
-            // console.error(error);
-            // return Response.json(error);
+            // console.error(error)
+            // return Response.json(error)
         
           }
     }
@@ -78,8 +78,8 @@ const updateList = async (req, context) => {
 
         try {
             
-            const database = (await client).db('randolisto');
-            const lists = database.collection('lists');
+            const database = (await client).db('randolisto')
+            const lists = database.collection('lists')
         
             await lists.updateOne(
                 { "_id": new ObjectId(listId) },
@@ -87,13 +87,13 @@ const updateList = async (req, context) => {
             )
             
             // console.log(theList)
-            // return Response.json(theList);
-            return Response.json({response: 'Item Removed Successfully'});   
+            // return Response.json(theList)
+            return Response.json({response: 'Item Removed Successfully'})   
         
           } catch (error) {
         
-            // console.error(error);
-            // return Response.json(error);
+            // console.error(error)
+            // return Response.json(error)
         
           }
 

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 
 const CurrentList = (props) => {
 
-  const [list, setList] = useState([...props.existingList]);
+  const [list, setList] = useState([...props.existingList])
   const [newItem, setNewItem] = useState('')
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
 
   const handleAdd = (e) => {
     e.preventDefault()
@@ -25,7 +25,7 @@ const CurrentList = (props) => {
     display: 'flex',
     justifyContent: "space-between",
     alignItems: "center"
-  };
+  }
 
   //update list on new item
   useEffect(() => { 
@@ -33,11 +33,11 @@ const CurrentList = (props) => {
     setNewItem('')
     setLoading(false)
 
-  }, [props.existingList]);
+  }, [props.existingList])
 
   let listItems = list.map(({itemName, itemId}, index) =>  {
       return <li key={itemId} style={listStyle}><span>{itemName}</span><button onClick={ () => props.handleRemove(itemId, itemName)}>x</button></li>
-});
+})
 
 
 
@@ -53,7 +53,7 @@ const CurrentList = (props) => {
     {listItems}
     </ul>
     </>
-  );
+  )
 }
 
 export default CurrentList
