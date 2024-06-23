@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
+import { MongoClient, ObjectId } from "mongodb"
 
-const { MongoClient, ObjectId } = require("mongodb");
 const mongoClient = new MongoClient(process.env.MONGO_DB);
 const client = mongoClient.connect();
 
