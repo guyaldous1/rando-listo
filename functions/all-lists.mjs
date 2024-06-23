@@ -1,16 +1,10 @@
 import client from './shared/db';
 
-const { MongoClient } = require("mongodb");
-
-const mongoClient = new MongoClient(process.env.MONGO_DB);
-
-const clientPromise = mongoClient.connect();
-
 const allLists = async (req, context) => {
 
   try {
 
-    const database = (await clientPromise).db('randolisto');
+    const database = (await client).db('randolisto');
     const lists = database.collection('lists');
 
     const allLists = await lists.find().toArray();
