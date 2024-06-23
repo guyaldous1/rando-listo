@@ -13,6 +13,7 @@ function App() {
   const [lists, setLists] = useState(null);
   const [currentList, setCurrentList] = useState(null)
   const [loadingLists, setLoadingLists] = useState(true);
+  const [loadingListData, setLoadingListData] = useState(false)
 
   //get all lists
   useEffect(() => {
@@ -27,10 +28,10 @@ function App() {
         }
         
         let postsData = await response.json();
-        postsData = JSON.parse(postsData)
         setLists(postsData);
         setLoadingLists(false);
         setError(null);
+        
       } catch (err) {
         setError(err.message);
         setLists(null);
@@ -47,28 +48,54 @@ function App() {
   const fetchCurrentListData = async () => {
     if(currentList !== null)
     try {
-    
+      setLoadingListData(true)
       const response = await fetch(
-        `/api/get-list?listId=${currentList.id}`
+        `/api/get-list?listId=${currentList._id}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error: Status ${response.status}`);
       }
       
       let postsData = await response.json();
-      postsData = JSON.parse(postsData)
-      setData(postsData);
-
+      setData(postsData.list);
+      // console.log(postsData);
+      // setLoadingListData(false)
       setError(null);
     } catch (err) {
       setError(err.message);
       setData(null);
     } finally {
+      setLoadingListData(false)
       setLoading(false);
     }
   };
   fetchCurrentListData()
 }, [currentList]);
+
+const reFetchListOfLists = async () => {
+  try {
+    
+    const response = await fetch(
+      `/api/all-lists`
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error: Status ${response.status}`);
+    }
+    
+    let postsData = await response.json();
+    setLists(postsData);
+    setLoadingLists(false);
+    
+    setError(null);
+    
+  } catch (err) {
+    setError(err.message);
+    setLists(null);
+  } finally {
+    // setLoading(false);
+    setLoadingListData(false)
+  }
+};
 
   const handleNew = async (newItem) => {
     const settings = {
@@ -82,15 +109,12 @@ function App() {
     try {
       setLoading(true);
       const response = await fetch(
-        `/api/update-list-add?listId=${currentList.id}&newItem=${newItem}`, settings
+        `/api/update-list?listId=${currentList._id}&newItem=${newItem}`, settings
       );
       if (!response.ok) {
         throw new Error(`HTTP error: Status ${response.status}`);
       }
-      
-      // let postsData = await response.json();
-      // postsData = JSON.parse(postsData)
-      // setData([...postsData]);
+
       reFetchCurrentListData();
     } catch (err) {
       setError(err.message);
@@ -110,7 +134,7 @@ function App() {
     try {
       setLoading(true);
       const response = await fetch(
-        `/api/update-list?listId=${currentList.id}&removeItem=${removeItem}`, settings
+        `/api/update-list?listId=${currentList._id}&removeItem=${removeItem}`, settings
       );
       if (!response.ok) {
         throw new Error(`HTTP error: Status ${response.status}`);
@@ -128,15 +152,14 @@ function App() {
     try {
       
       const response = await fetch(
-        `/api/get-list?listId=${currentList.id}`
+        `/api/get-list?listId=${currentList._id}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error: Status ${response.status}`);
       }
       
       let postsData = await response.json();
-      postsData = JSON.parse(postsData)
-      setData(postsData);
+      setData(postsData.list);
       setError(null);
     } catch (err) {
       setError(err.message);
@@ -167,7 +190,7 @@ function App() {
     try {
       setLoading(true);
       const response = await fetch(
-        `/api/update-list?listId=${currentList.id}&reset`, settings
+        `/api/update-list?listId=${currentList._id}&reset`, settings
       );
       if (!response.ok) {
         throw new Error(`HTTP error: Status ${response.status}`);
@@ -190,6 +213,7 @@ function App() {
     };
 
     try {
+      setLoadingListData(true)
       const response = await fetch(
         `/api/all-lists-update?newList=${newItem}`, settings
       );
@@ -197,9 +221,7 @@ function App() {
         throw new Error(`HTTP error: Status ${response.status}`);
       }
       
-      let postsData = await response.json();
-      postsData = JSON.parse(postsData)
-      setLists([...postsData]);
+      reFetchListOfLists()
     } catch (err) {
       setError(err.message);
       setData(null);
@@ -215,7 +237,7 @@ function App() {
   }
   
   const handleReset = () => {
-    if (window.confirm(`Are you sure you want to reset ${currentList.name}?`)) {
+    if (window.confirm(`Are you sure you want to reset ${currentList.listName}?`)) {
       handleResetCall()
     } else {
       // Do nothing!
@@ -229,7 +251,7 @@ function App() {
     const random = Math.floor(Math.random() * data.length)
     const randomItem = data[random]
     console.log(random, randomItem)
-    setRandomItem(randomItem.name)
+    setRandomItem(randomItem.itemName)
   }
 
   return (
@@ -237,31 +259,33 @@ function App() {
 
       <section className="container">
         <h3>Lists</h3>
-        <div className="list-name__wrapper">
+        <div className={"list-name__wrapper " + (loadingListData ? "list-name__wrapper--disabled" : "")}>
         {loadingLists && (
         <div className="text-xl font-medium">Loading Lists....</div>
       )}
         {lists && 
-            lists.map(({name, id}, index) =>  {
-              return <div className="list-name" key={id} onClick={() => setCurrentList({id, name})}><span>{name}</span></div>
+            lists.map(({listName, _id}, index) =>  {
+              return <div className="list-name" key={_id} onClick={() => setCurrentList({_id, listName})}><span>{listName}</span></div>
         })}
-        <div className="list-name" onClick={handleAddList}>+ Add List +</div>
+        {!loadingLists &&(
+          <div className="list-name" onClick={handleAddList}>+ Add List +</div>
+        )}
       </div>
     </section>
     
     <section className="container">
-      {(loading && (data === null)) && (
+      {(loading && (data === null) && !loadingLists) && (
           <div className="text-xl font-medium">Select a list.</div>
         )}
       {error && <div className="text-red-700">{error}</div>}
-      {randomItem &&
-      <p className='random-item' style={{ background: rcolor() }}>{randomItem}</p>
-      }
       
       {data && 
       <div className={"list-wrapper " + (loading ? "list-wrapper--disabled" : "")} >
-        <h2>Current List: {currentList.name}</h2>
+        <h2>Current List: {currentList.listName}</h2>
         <button onClick={() => randomise()} disabled={data.length === 0}>randomise</button>
+        {randomItem &&
+          <p className='random-item' style={{ background: rcolor() }}>{randomItem}</p>
+          }
         <CurrentList existingList={data} handleNew={handleNew} handleRemove={handleRemove} />
         <button onClick={() => handleReset()} disabled={data.length === 0}>reset list</button>
       </div>
