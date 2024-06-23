@@ -13,7 +13,7 @@ const client = new MongoClient(uri, {
 
 
 const allLists = async (req, context) => {
-
+console.log(process.env.MONGO_DB)
   try {
 
     const database = client.db('randolisto');
