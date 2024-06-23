@@ -1,9 +1,8 @@
-import { getStore } from "@netlify/blobs";
-import { v4 as uuidv4 } from 'uuid';
+import client from './shared/db';
 
 const allListsUpdate = async (req, context) => {
 
-    const store = getStore("store");
+    // const store = getStore("store");
 
     let query = new URL(req.url)
 
@@ -13,29 +12,41 @@ const allListsUpdate = async (req, context) => {
     if(query.searchParams.has("newList")){
         let newItem = query.searchParams.get("newList")
 
-        let oldlist = await store.get('alllist')
-        oldlist = JSON.parse(oldlist)
+        try {
 
-        await store.setJSON("alllist", [...oldlist, {id: uuidv4(), name: newItem}]);
+            const database = client.db('randolisto');
+            const lists = database.collection('lists');
+
+            await lists.insertOne(
+                {itemName: newItem}
+            )
+            // Send a ping to confirm a successful connection
+            return Response.json({response: 'List Added Successfully'}); 
+        
+          } catch (error) {
+        
+            // console.error(error);
+            // return Response.json(error);
+        
+          } finally {
+            // Ensures that the client will close when you finish/error
+            await client.close();
+          }
     }
     
-    //remove item
-    if(query.searchParams.has("removeList")){
-        let removeList = query.searchParams.get("removeList")
+    // //remove item
+    // if(query.searchParams.has("removeList")){
+    //     let removeList = query.searchParams.get("removeList")
 
-        let oldlist = await store.get('alllist')
-        oldlist = JSON.parse(oldlist)
-        let newList = oldlist.filter(item => item.id !== removeList)
+    //     let oldlist = await store.get('alllist')
+    //     oldlist = JSON.parse(oldlist)
+    //     let newList = oldlist.filter(item => item.id !== removeList)
 
-        await store.delete((`list-${removeList}`))
+    //     await store.delete((`list-${removeList}`))
 
-        await store.setJSON(`alllist`, [...newList]);
-    }
+    //     await store.setJSON(`alllist`, [...newList]);
+    // }
 
-
-    const lists = await store.get('alllist')
-
-    return Response.json(lists);
 }
 
 export default allListsUpdate
