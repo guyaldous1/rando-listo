@@ -1,8 +1,8 @@
 // import client from './shared/db';
 
-const { MongoClient } = require("mongodb");
-const mongoClient = new MongoClient(process.env.MONGO_DB);
-const client = mongoClient.connect();
+import { MongoClient } from "mongodb"
+const mongoClient = new MongoClient(process.env.MONGO_DB)
+const client = mongoClient.connect()
 
 const allLists = async (req, context) => {
 
