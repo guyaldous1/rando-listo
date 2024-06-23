@@ -1,6 +1,9 @@
 import { v4 as uuidv4 } from 'uuid'
-import { ObjectId } from 'mongodb'
-import client from './shared/db'
+
+const { MongoClient, ObjectId } = require("mongodb");
+const mongoClient = new MongoClient(process.env.MONGO_DB);
+const client = mongoClient.connect();
+
 
 const updateList = async (req, context) => {
 
@@ -23,7 +26,7 @@ const updateList = async (req, context) => {
 
         try {
             
-            const database = client.db('randolisto');
+            const database = (await client).db('randolisto');
             const lists = database.collection('lists');
         
             await lists.updateOne(
@@ -40,9 +43,6 @@ const updateList = async (req, context) => {
             // console.error(error);
             // return Response.json(error);
         
-          } finally {
-            // Ensures that the client will close when you finish/error
-            await client.close();
           }
         
     }
@@ -52,7 +52,7 @@ const updateList = async (req, context) => {
 
         try {
             
-            const database = client.db('randolisto');
+            const database = (await client).db('randolisto');
             const lists = database.collection('lists');
         
             await lists.updateOne(
@@ -69,9 +69,6 @@ const updateList = async (req, context) => {
             // console.error(error);
             // return Response.json(error);
         
-          } finally {
-            // Ensures that the client will close when you finish/error
-            await client.close();
           }
     }
 
@@ -81,7 +78,7 @@ const updateList = async (req, context) => {
 
         try {
             
-            const database = client.db('randolisto');
+            const database = (await client).db('randolisto');
             const lists = database.collection('lists');
         
             await lists.updateOne(
@@ -98,9 +95,6 @@ const updateList = async (req, context) => {
             // console.error(error);
             // return Response.json(error);
         
-          } finally {
-            // Ensures that the client will close when you finish/error
-            await client.close();
           }
 
         

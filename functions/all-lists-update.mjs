@@ -1,4 +1,7 @@
-import client from './shared/db';
+const { MongoClient, ObjectId } = require("mongodb");
+const mongoClient = new MongoClient(process.env.MONGO_DB);
+const client = mongoClient.connect();
+
 
 const allListsUpdate = async (req, context) => {
 
@@ -14,7 +17,7 @@ const allListsUpdate = async (req, context) => {
 
         try {
 
-            const database = client.db('randolisto');
+            const database = (await client).db('randolisto');
             const lists = database.collection('lists');
 
             await lists.insertOne(
@@ -28,9 +31,6 @@ const allListsUpdate = async (req, context) => {
             // console.error(error);
             // return Response.json(error);
         
-          } finally {
-            // Ensures that the client will close when you finish/error
-            await client.close();
           }
     }
     

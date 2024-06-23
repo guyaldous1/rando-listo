@@ -1,4 +1,8 @@
-import client from './shared/db';
+// import client from './shared/db';
+
+const { MongoClient } = require("mongodb");
+const mongoClient = new MongoClient(process.env.MONGO_DB);
+const client = mongoClient.connect();
 
 const allLists = async (req, context) => {
 
@@ -17,9 +21,6 @@ const allLists = async (req, context) => {
     // console.error(error);
     // return Response.json(error);
 
-  } finally {
-    // Ensures that the client will close when you finish/error
-    await client.close();
   }
 
 }

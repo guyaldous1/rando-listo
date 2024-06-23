@@ -1,5 +1,10 @@
-import { ObjectId } from 'mongodb'
-import client from './shared/db';
+// import { ObjectId } from 'mongodb'
+// import client from './shared/db';
+
+const { MongoClient, ObjectId } = require("mongodb");
+const mongoClient = new MongoClient(process.env.MONGO_DB);
+const client = mongoClient.connect();
+
 
 const getList = async (req, context) => {
 
@@ -16,7 +21,7 @@ const getList = async (req, context) => {
 
         console.log(listId)
         
-        const database = client.db('randolisto');
+        const database = (await client).db('randolisto');
         const lists = database.collection('lists');
     
         const theList = await lists.findOne({
@@ -31,9 +36,6 @@ const getList = async (req, context) => {
         // console.error(error);
         // return Response.json(error);
     
-      } finally {
-        // Ensures that the client will close when you finish/error
-        await client.close();
       }
     
 }
