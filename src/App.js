@@ -1,18 +1,19 @@
-import './App.css';
-import CurrentList from './components/CurrentList.js';
-import { useEffect, useState } from 'react';
-import rcolor from 'rcolor';
+import './App.css'
+import CurrentList from './components/CurrentList.js'
+import { useEffect, useState } from 'react'
+import { Helmet } from 'react-helmet-async'
+import rcolor from 'rcolor'
 
 function App() {
 
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [data, setData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [randomItem, setRandomItem] = useState('')
 
-  const [lists, setLists] = useState(null);
+  const [lists, setLists] = useState(null)
   const [currentList, setCurrentList] = useState(null)
-  const [loadingLists, setLoadingLists] = useState(true);
+  const [loadingLists, setLoadingLists] = useState(true)
   const [loadingListData, setLoadingListData] = useState(false)
 
   //get all lists
@@ -22,26 +23,26 @@ function App() {
         
         const response = await fetch(
           `/api/all-lists`
-        );
+        )
         if (!response.ok) {
-          throw new Error(`HTTP error: Status ${response.status}`);
+          throw new Error(`HTTP error: Status ${response.status}`)
         }
         
-        let postsData = await response.json();
-        setLists(postsData);
-        setLoadingLists(false);
-        setError(null);
+        let postsData = await response.json()
+        setLists(postsData)
+        setLoadingLists(false)
+        setError(null)
         
       } catch (err) {
-        setError(err.message);
-        setLists(null);
+        setError(err.message)
+        setLists(null)
       } finally {
-        // setLoading(false);
+        // setLoading(false)
       }
-    };
+    }
 
-    fetchListOfLists();
-  }, []);
+    fetchListOfLists()
+  }, [])
 
   //get current list
   useEffect(() => {
@@ -51,51 +52,51 @@ function App() {
       setLoadingListData(true)
       const response = await fetch(
         `/api/get-list?listId=${currentList._id}`
-      );
+      )
       if (!response.ok) {
-        throw new Error(`HTTP error: Status ${response.status}`);
+        throw new Error(`HTTP error: Status ${response.status}`)
       }
       
-      let postsData = await response.json();
-      setData(postsData.list);
-      // console.log(postsData);
+      let postsData = await response.json()
+      setData(postsData.list)
+      // console.log(postsData)
       // setLoadingListData(false)
-      setError(null);
+      setError(null)
     } catch (err) {
-      setError(err.message);
-      setData(null);
+      setError(err.message)
+      setData(null)
     } finally {
       setLoadingListData(false)
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
   fetchCurrentListData()
-}, [currentList]);
+}, [currentList])
 
 const reFetchListOfLists = async () => {
   try {
     
     const response = await fetch(
       `/api/all-lists`
-    );
+    )
     if (!response.ok) {
-      throw new Error(`HTTP error: Status ${response.status}`);
+      throw new Error(`HTTP error: Status ${response.status}`)
     }
     
-    let postsData = await response.json();
-    setLists(postsData);
-    setLoadingLists(false);
+    let postsData = await response.json()
+    setLists(postsData)
+    setLoadingLists(false)
     
-    setError(null);
+    setError(null)
     
   } catch (err) {
-    setError(err.message);
-    setLists(null);
+    setError(err.message)
+    setLists(null)
   } finally {
-    // setLoading(false);
+    // setLoading(false)
     setLoadingListData(false)
   }
-};
+}
 
   const handleNew = async (newItem) => {
     const settings = {
@@ -104,23 +105,23 @@ const reFetchListOfLists = async () => {
             Accept: 'application/json',
             'Content-Type': 'application/json',
         }
-    };
+    }
 
     try {
-      setLoading(true);
+      setLoading(true)
       const response = await fetch(
         `/api/update-list?listId=${currentList._id}&newItem=${newItem}`, settings
-      );
+      )
       if (!response.ok) {
-        throw new Error(`HTTP error: Status ${response.status}`);
+        throw new Error(`HTTP error: Status ${response.status}`)
       }
 
-      reFetchCurrentListData();
+      reFetchCurrentListData()
     } catch (err) {
-      setError(err.message);
-      setData(null);
+      setError(err.message)
+      setData(null)
     }
-  };
+  }
 
   const handleRemoveCall = async (removeItem) => {
     const settings = {
@@ -129,23 +130,23 @@ const reFetchListOfLists = async () => {
             Accept: 'application/json',
             'Content-Type': 'application/json',
         }
-    };
+    }
 
     try {
-      setLoading(true);
+      setLoading(true)
       const response = await fetch(
         `/api/update-list?listId=${currentList._id}&removeItem=${removeItem}`, settings
-      );
+      )
       if (!response.ok) {
-        throw new Error(`HTTP error: Status ${response.status}`);
+        throw new Error(`HTTP error: Status ${response.status}`)
       }
       
-      reFetchCurrentListData();
+      reFetchCurrentListData()
     } catch (err) {
-      setError(err.message);
-      setData(null);
+      setError(err.message)
+      setData(null)
     }
-  };
+  }
 
   const reFetchCurrentListData = async () => {
     if(currentList !== null)
@@ -153,21 +154,21 @@ const reFetchListOfLists = async () => {
       
       const response = await fetch(
         `/api/get-list?listId=${currentList._id}`
-      );
+      )
       if (!response.ok) {
-        throw new Error(`HTTP error: Status ${response.status}`);
+        throw new Error(`HTTP error: Status ${response.status}`)
       }
       
-      let postsData = await response.json();
-      setData(postsData.list);
-      setError(null);
+      let postsData = await response.json()
+      setData(postsData.list)
+      setError(null)
     } catch (err) {
-      setError(err.message);
-      setData(null);
+      setError(err.message)
+      setData(null)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const handleRemove = (id, name) => {
     if (window.confirm(`Are you sure you want to remove ${name}?`)) {
@@ -185,23 +186,23 @@ const reFetchListOfLists = async () => {
             Accept: 'application/json',
             'Content-Type': 'application/json',
         }
-    };
+    }
 
     try {
-      setLoading(true);
+      setLoading(true)
       const response = await fetch(
         `/api/update-list?listId=${currentList._id}&reset`, settings
-      );
+      )
       if (!response.ok) {
-        throw new Error(`HTTP error: Status ${response.status}`);
+        throw new Error(`HTTP error: Status ${response.status}`)
       }
       
-      reFetchCurrentListData();
+      reFetchCurrentListData()
     } catch (err) {
-      setError(err.message);
-      setData(null);
+      setError(err.message)
+      setData(null)
     }
-  };
+  }
 
   const handleNewList = async (newItem) => {
     const settings = {
@@ -210,23 +211,23 @@ const reFetchListOfLists = async () => {
             Accept: 'application/json',
             'Content-Type': 'application/json',
         }
-    };
+    }
 
     try {
       setLoadingListData(true)
       const response = await fetch(
         `/api/all-lists-update?newList=${newItem}`, settings
-      );
+      )
       if (!response.ok) {
-        throw new Error(`HTTP error: Status ${response.status}`);
+        throw new Error(`HTTP error: Status ${response.status}`)
       }
       
       reFetchListOfLists()
     } catch (err) {
-      setError(err.message);
-      setData(null);
+      setError(err.message)
+      setData(null)
     }
-  };
+  }
 
   const handleAddList = () => {
     const enteredList = prompt('Please enter the name of the new list:')
@@ -241,7 +242,7 @@ const reFetchListOfLists = async () => {
       handleResetCall()
     } else {
       // Do nothing!
-      // console.log('cancelled');
+      // console.log('cancelled')
     }
   }
   
@@ -256,6 +257,10 @@ const reFetchListOfLists = async () => {
 
   return (
     <div className="App">
+      <Helmet>
+      <title>{data ? currentList.listName : "Randomise Dem Lists"} | Rando Listo</title>
+      <meta name='description' content='Store you lists of stuff and then randomise items from the list.' />
+      </Helmet>
 
       <section className="container">
         <h3>Lists</h3>
@@ -292,7 +297,7 @@ const reFetchListOfLists = async () => {
       } 
     </section>
   </div>
-  );
+  )
 }
 
-export default App;
+export default App
