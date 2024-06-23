@@ -1,22 +1,21 @@
-// import client from './shared/db';
-import { MongoClient, ServerApiVersion } from "mongodb";
-const uri = process.env.MONGO_DB;
+import client from './shared/db';
+// import { MongoClient, ServerApiVersion } from "mongodb";
+// const uri = process.env.MONGO_DB;
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
-    serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-    }
-});
+// // Create a MongoClient with a MongoClientOptions object to set the Stable API version
+// const client = new MongoClient(uri, {
+//     serverApi: {
+//     version: ServerApiVersion.v1,
+//     strict: true,
+//     deprecationErrors: true,
+//     }
+// });
 
 
 const allLists = async (req, context) => {
-console.log(process.env.MONGO_DB)
   try {
 
-    const database = client.db('randolisto');
+    const database = (await client).db('randolisto');
     const lists = database.collection('lists');
 
     const allLists = await lists.find().toArray();
