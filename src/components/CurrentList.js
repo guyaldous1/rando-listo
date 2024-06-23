@@ -35,8 +35,8 @@ const CurrentList = (props) => {
 
   }, [props.existingList]);
 
-  let listItems = list.map(({name, id}, index) =>  {
-      return <li key={id} style={listStyle}><span>{name}</span><button onClick={ () => props.handleRemove(id, name)}>x</button></li>
+  let listItems = list.map(({itemName, itemId}, index) =>  {
+      return <li key={itemId} style={listStyle}><span>{itemName}</span><button onClick={ () => props.handleRemove(itemId, itemName)}>x</button></li>
 });
 
 

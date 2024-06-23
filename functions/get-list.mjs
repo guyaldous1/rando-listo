@@ -1,6 +1,11 @@
 import { getStore } from "@netlify/blobs";
+// import { ObjectId } from 'bson'; 
+import { ObjectId } from 'mongodb'
+
+import client from './shared/db';
 
 const getList = async (req, context) => {
+
 
     let query = new URL(req.url)
     
@@ -9,22 +14,31 @@ const getList = async (req, context) => {
     let listId = query.searchParams.get("listId")
     if(listId === 'null') return Response.json({error:'soz bro need id'});
 
-    const store = getStore("store");
 
-    //check for list ID in all list store
-    let lists = await store.get('alllist')
-    lists = JSON.parse(lists)
-    if(!lists.some(list => list.id === listId)) return Response.json({error:'soz bro dont match ID'});
+    try {
 
-    //create initial list blob if none exists
-    const { blobs } = await store.list();
-    if(!blobs.some(b => b.key === `list-${listId}`)){
-        await store.setJSON(`list-${listId}`, []);
-    }
-
-    const list = await store.get(`list-${listId}`)
-
-    return Response.json(list);
+        console.log(listId)
+        
+        const database = client.db('randolisto');
+        const lists = database.collection('lists');
+    
+        const theList = await lists.findOne({
+            "_id": new ObjectId(listId)
+        })
+        
+        console.log(theList)
+        return Response.json(theList);
+    
+      } catch (error) {
+    
+        // console.error(error);
+        // return Response.json(error);
+    
+      } finally {
+        // Ensures that the client will close when you finish/error
+        await client.close();
+      }
+    
 }
 
 export default getList

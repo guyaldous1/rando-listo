@@ -73,7 +73,7 @@ button{
   align-items: center;
 }
 
-.list-wrapper--disabled{
+.list-wrapper--disabled, .list-name__wrapper--disabled{
   opacity: 0.6;
   pointer-events: none;
   user-select: none;

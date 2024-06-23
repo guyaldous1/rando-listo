@@ -13,6 +13,7 @@ function App() {
   const [lists, setLists] = useState(null);
   const [currentList, setCurrentList] = useState(null)
   const [loadingLists, setLoadingLists] = useState(true);
+  const [loadingListData, setLoadingListData] = useState(false)
 
   //get all lists
   useEffect(() => {
@@ -47,22 +48,24 @@ function App() {
   const fetchCurrentListData = async () => {
     if(currentList !== null)
     try {
-    
+      setLoadingListData(true)
       const response = await fetch(
-        `/api/get-list?listId=${currentList.id}`
+        `/api/get-list?listId=${currentList._id}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error: Status ${response.status}`);
       }
       
       let postsData = await response.json();
-      setData(postsData);
-
+      setData(postsData.list);
+      // console.log(postsData);
+      // setLoadingListData(false)
       setError(null);
     } catch (err) {
       setError(err.message);
       setData(null);
     } finally {
+      setLoadingListData(false)
       setLoading(false);
     }
   };
@@ -104,7 +107,7 @@ const reFetchListOfLists = async () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `/api/update-list?listId=${currentList.id}&newItem=${newItem}`, settings
+        `/api/update-list?listId=${currentList._id}&newItem=${newItem}`, settings
       );
       if (!response.ok) {
         throw new Error(`HTTP error: Status ${response.status}`);
@@ -147,14 +150,14 @@ const reFetchListOfLists = async () => {
     try {
       
       const response = await fetch(
-        `/api/get-list?listId=${currentList.id}`
+        `/api/get-list?listId=${currentList._id}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error: Status ${response.status}`);
       }
       
       let postsData = await response.json();
-      setData(postsData);
+      setData(postsData.list);
       setError(null);
     } catch (err) {
       setError(err.message);
@@ -245,7 +248,7 @@ const reFetchListOfLists = async () => {
     const random = Math.floor(Math.random() * data.length)
     const randomItem = data[random]
     console.log(random, randomItem)
-    setRandomItem(randomItem.name)
+    setRandomItem(randomItem.itemName)
   }
 
   return (
@@ -253,7 +256,7 @@ const reFetchListOfLists = async () => {
 
       <section className="container">
         <h3>Lists</h3>
-        <div className="list-name__wrapper">
+        <div className={"list-name__wrapper " + (loadingListData ? "list-name__wrapper--disabled" : "")}>
         {loadingLists && (
         <div className="text-xl font-medium">Loading Lists....</div>
       )}
@@ -270,14 +273,14 @@ const reFetchListOfLists = async () => {
           <div className="text-xl font-medium">Select a list.</div>
         )}
       {error && <div className="text-red-700">{error}</div>}
-      {randomItem &&
-      <p className='random-item' style={{ background: rcolor() }}>{randomItem}</p>
-      }
       
       {data && 
       <div className={"list-wrapper " + (loading ? "list-wrapper--disabled" : "")} >
-        <h2>Current List: {currentList.name}</h2>
+        <h2>Current List: {currentList.listName}</h2>
         <button onClick={() => randomise()} disabled={data.length === 0}>randomise</button>
+        {randomItem &&
+          <p className='random-item' style={{ background: rcolor() }}>{randomItem}</p>
+          }
         <CurrentList existingList={data} handleNew={handleNew} handleRemove={handleRemove} />
         <button onClick={() => handleReset()} disabled={data.length === 0}>reset list</button>
       </div>
