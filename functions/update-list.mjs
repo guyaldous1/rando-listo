@@ -1,9 +1,6 @@
-// import { getStore } from "@netlify/blobs";
-import { v4 as uuidv4 } from 'uuid';
-
+import { v4 as uuidv4 } from 'uuid'
 import { ObjectId } from 'mongodb'
-
-import client from './shared/db';
+import client from './shared/db'
 
 const updateList = async (req, context) => {
 
@@ -25,8 +22,6 @@ const updateList = async (req, context) => {
         let newItem = query.searchParams.get("newItem")
 
         try {
-
-            console.log(listId)
             
             const database = client.db('randolisto');
             const lists = database.collection('lists');
@@ -52,25 +47,65 @@ const updateList = async (req, context) => {
         
     }
 
-    // //reset list
-    // if(query.searchParams.has("reset")){
-    //     await store.setJSON(`list-${listId}`, []);
-    //     return Response.json({response: 'List Reset Successfully'});
-    // }
+    //reset list
+    if(query.searchParams.has("reset")){
 
-    // //remove item by ID
-    // if(query.searchParams.has("removeItem")){
-    //     let removeItem = query.searchParams.get("removeItem")
-
-    //     let oldlist = await store.get(`list-${listId}`)
-    //     oldlist = JSON.parse(oldlist)
-
-    //     let newList = oldlist.filter(item => item.id !== removeItem)
-
-    //     await store.setJSON(`list-${listId}`, [...newList]);
+        try {
+            
+            const database = client.db('randolisto');
+            const lists = database.collection('lists');
         
-    //     return Response.json({response: 'Item Removed Successfully'});
-    // }
+            await lists.updateOne(
+                { "_id": new ObjectId(listId) },
+                {$set: {list: []}}
+            )
+            
+            // console.log(theList)
+            // return Response.json(theList);
+            return Response.json({response: 'List Reset Successfully'});  
+        
+          } catch (error) {
+        
+            // console.error(error);
+            // return Response.json(error);
+        
+          } finally {
+            // Ensures that the client will close when you finish/error
+            await client.close();
+          }
+    }
+
+    //remove item by ID
+    if(query.searchParams.has("removeItem")){
+        let removeItem = query.searchParams.get("removeItem")
+
+        try {
+            
+            const database = client.db('randolisto');
+            const lists = database.collection('lists');
+        
+            await lists.updateOne(
+                { "_id": new ObjectId(listId) },
+                {$pull: {list: {itemId: removeItem}}}
+            )
+            
+            // console.log(theList)
+            // return Response.json(theList);
+            return Response.json({response: 'Item Removed Successfully'});   
+        
+          } catch (error) {
+        
+            // console.error(error);
+            // return Response.json(error);
+        
+          } finally {
+            // Ensures that the client will close when you finish/error
+            await client.close();
+          }
+
+        
+        
+    }
 
 }
 

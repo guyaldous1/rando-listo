@@ -132,7 +132,7 @@ const reFetchListOfLists = async () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `/api/update-list?listId=${currentList.id}&removeItem=${removeItem}`, settings
+        `/api/update-list?listId=${currentList._id}&removeItem=${removeItem}`, settings
       );
       if (!response.ok) {
         throw new Error(`HTTP error: Status ${response.status}`);
@@ -188,7 +188,7 @@ const reFetchListOfLists = async () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `/api/update-list?listId=${currentList.id}&reset`, settings
+        `/api/update-list?listId=${currentList._id}&reset`, settings
       );
       if (!response.ok) {
         throw new Error(`HTTP error: Status ${response.status}`);
@@ -234,7 +234,7 @@ const reFetchListOfLists = async () => {
   }
   
   const handleReset = () => {
-    if (window.confirm(`Are you sure you want to reset ${currentList.name}?`)) {
+    if (window.confirm(`Are you sure you want to reset ${currentList.listName}?`)) {
       handleResetCall()
     } else {
       // Do nothing!
@@ -264,12 +264,14 @@ const reFetchListOfLists = async () => {
             lists.map(({listName, _id}, index) =>  {
               return <div className="list-name" key={_id} onClick={() => setCurrentList({_id, listName})}><span>{listName}</span></div>
         })}
-        <div className="list-name" onClick={handleAddList}>+ Add List +</div>
+        {!loadingLists &&(
+          <div className="list-name" onClick={handleAddList}>+ Add List +</div>
+        )}
       </div>
     </section>
     
     <section className="container">
-      {(loading && (data === null)) && (
+      {(loading && (data === null) && !loadingLists) && (
           <div className="text-xl font-medium">Select a list.</div>
         )}
       {error && <div className="text-red-700">{error}</div>}

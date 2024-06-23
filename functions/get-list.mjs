@@ -1,7 +1,4 @@
-import { getStore } from "@netlify/blobs";
-// import { ObjectId } from 'bson'; 
 import { ObjectId } from 'mongodb'
-
 import client from './shared/db';
 
 const getList = async (req, context) => {
